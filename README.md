@@ -37,23 +37,39 @@ champ. L'action des fichiers `.tex` fait apparaître Λ dans
 indice mais non une preuve : une constante absorbée reste possible et
 devrait alors être documentée explicitement.
 
-### Conséquence de la correction de Λ
+### Domaine de validité et contrainte sur β
+
+La formule `|γ − 1| = ε·(r/r_V)^{3/2}` n'est valide que pour `ε ≡ (β·M_Pl)² ≤ 1`.
+Ce garde-fou est la seule contrainte active sur β :
+
+| Condition | Valeur de β | Conséquence |
+|---|---|---|
+| Seuil perturbatif (ε ≤ 1) | β ≤ 4.107×10⁻¹⁹ GeV⁻¹ | **seule contrainte valide** |
+| Borne Cassini (\|γ−1\| ≤ 2.3×10⁻⁵) | β ≤ 1.042×10⁻¹⁴ GeV⁻¹ | hors domaine (ε ≈ 6×10⁸) — non exploitable |
+
+Dans le domaine valide (β ≤ 1/M_Pl), on obtient à la frontière :
+r_V ≈ 152 pc et |γ − 1| ≈ 5.7×10⁻¹² à 1 UA — **6 ordres en dessous de Cassini**.
+Cassini n'impose aucune contrainte sur β ; seul ε ≤ 1 le fait.
+
+Le résultat `|γ − 1| = 0.68` pour β = 10⁻¹¹ GeV⁻¹ (anciennement affiché)
+et la conclusion « exclu par Cassini » qui s'ensuivait décrivaient le
+paramètre bouché-trou hors domaine perturbatif (ε ≈ 5.9×10¹⁴ >> 1), pas le
+modèle. Voir `CHANGELOG.md` pour le détail de l'erreur et sa reconstruction.
+
+L'erreur sur Λ (5.13×10⁻³⁴ GeV au lieu de 1.76×10⁻²² GeV) est conservée
+en mémoire dans le script via le test `t6` et dans ce tableau :
 
 | | Λ = 5.13×10⁻³⁴ GeV | Λ = 1.76×10⁻²² GeV |
 |---|---|---|
-| r_V (Soleil) | 4.7×10³² m | 1.4×10²¹ m (44 kpc) |
-| \|γ − 1\| à 1 UA | 3.4×10⁻¹⁸ | 0.68 |
-| vs Cassini (2.3×10⁻⁵) | passe | dépasse de 4 ordres |
-
-L'erreur sur Λ gonflait r_V et écrasait artificiellement `|γ − 1|` via la
-suppression (r/r_V)^{3/2}. Avec la valeur corrigée, le sourçage de β
-devient déterminant : à β = 10⁻¹¹ GeV⁻¹ le modèle est exclu par Cassini,
-tandis que β ≲ 10⁻²³ GeV⁻¹ (soit β·M_Pl ≲ 10⁻⁵) le rend compatible.
+| r_V (Soleil, β = 10⁻¹¹) | 4.7×10³² m | 1.4×10²¹ m (44 kpc) |
+| Correction nécessaire | valeur erronée | dérivation vérifiée |
 
 ## Contenu
 
 ```
 scripts/ppn_check.py    # moteur de calcul (unités naturelles homogènes)
+tests/test_ppn.py       # 9 tests d'invariants (9/9 doit passer)
+examples/jupiter_orbit.py  # simulation orbitale (hors annexe B)
 ```
 
 ## Formules implémentées
@@ -77,12 +93,10 @@ numérique de `r_V` dépend de la convention retenue pour α.
 ## Utilisation
 
 ```bash
-python3 scripts/ppn_check.py
+python3 scripts/ppn_check.py          # rapport avec balayage en β
+python3 tests/test_ppn.py             # 9 tests (code 0 si tout passe)
+python3 examples/jupiter_orbit.py --save fig.png   # simulation orbitale
 ```
-
-Le script affiche `r_V`, `ε`, `|γ − 1|` et déclenche une alerte si `r_V`
-dépasse le rayon de l'univers observable (signal d'erreur d'unité ou de
-paramètre inapproprié).
 
 ## Prochaines étapes
 
