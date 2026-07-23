@@ -1,0 +1,129 @@
+"""
+Tests d'invariants pour ppn_check.py — validation déterministe.
+
+Ces tests vérifient la COHÉRENCE INTERNE des formules (B.4.1)–(B.5.4).
+Ils ne valident NI la valeur de β (non sourcée), NI le choix de Λ.
+Un script qui passe ces tests peut produire un chiffre faux si ses
+paramètres d'entrée le sont.
+
+Usage :  python3 test_ppn.py
+"""
+
+import numpy as np
+
+HBARC      = 1.973269804e-16   # GeV·m
+HBAR_GEV_S = 6.582119569e-25   # GeV·s
+MPC_M      = 3.0856775815e22   # m par Mpc
+M_PL       = 2.435e18          # GeV
+TOL        = 1e-9
+
+
+def Y_exact(r, alpha, beta, M, Lam):
+    """Solution exacte (B.4.2), branche régulière à l'infini."""
+    rV3 = alpha * beta * M / (4.0 * np.pi * Lam**3)
+    x = 4.0 * rV3 / r**3
+    # Forme stable : sqrt(1+x)-1 s'annule en float64 pour x < 1e-16.
+    return (Lam**3 / (2.0 * alpha)) * x / (np.sqrt(1.0 + x) + 1.0)
+
+
+def residu_B41(Y, r, alpha, beta, M, Lam):
+    """Résidu de la première intégrale : doit être nul."""
+    return Y + (alpha / Lam**3) * Y**2 - beta * M / (4.0 * np.pi * r**3)
+
+
+def r_V(alpha, beta, M, Lam):
+    return (alpha * beta * M / (4.0 * np.pi * Lam**3))**(1.0 / 3.0)
+
+
+def lambda_cosmo(h0_km_s_mpc=70.0):
+    """Λ recalculé depuis Λ³ = M_Pl H0², jamais recopié."""
+    h0_gev = (h0_km_s_mpc * 1.0e3 / MPC_M) * HBAR_GEV_S
+    return (M_PL * h0_gev**2)**(1.0 / 3.0)
+
+
+# Jeu de paramètres arbitraire : les tests portent sur la STRUCTURE,
+# pas sur des valeurs physiques particulières.
+A, B, M, L = 2.0, 1.0e-11, 1.1182e57, 5.0e-30
+
+
+def t1_solution_verifie_equation():
+    """(B.4.2) doit annuler (B.4.1) sur plusieurs décades."""
+    rv = r_V(A, B, M, L)
+    for r in rv * np.logspace(-4, 4, 40):
+        res = residu_B41(Y_exact(r, A, B, M, L), r, A, B, M, L)
+        ech = B * M / (4.0 * np.pi * r**3)
+        assert abs(res) / ech < TOL, f"résidu {res/ech:.2e} à r/r_V={r/rv:.1e}"
+
+
+def t2_limite_alpha_nul():
+    """α → 0 doit redonner le régime linéaire Y = βM/4πr³."""
+    # r doit être choisi HORS du rayon de Vainshtein, qui dépend
+    # lui-même de α : r_V ∝ α^{1/3}. On prend r = 1e6 r_V(α).
+    for a in [1e-6, 1e-9, 1e-12]:
+        r = 1.0e6 * r_V(a, B, M, L)
+        lin = B * M / (4.0 * np.pi * r**3)
+        ecart = abs(Y_exact(r, a, B, M, L) - lin) / lin
+        assert ecart < 1e-3, f"α={a:.0e} : écart {ecart:.2e}"
+
+
+def t3_transition_a_rV():
+    """À r = r_V les deux termes de (B.4.1) sont égaux (définition
+    de la convention 'matching' retenue au point 6)."""
+    rv = r_V(A, B, M, L)
+    Y = Y_exact(rv, A, B, M, L)
+    lineaire, cubique = Y, (A / L**3) * Y**2
+    # Y(r_V) = Λ³/2α (√5 − 1) ⇒ rapport = (√5−1)/2 = 1/φ
+    rapport = cubique / lineaire
+    attendu = (np.sqrt(5.0) - 1.0) / 2.0
+    assert abs(rapport - attendu) < TOL, f"rapport {rapport:.6f}"
+
+
+def t4_asymptotiques():
+    """Préfacteur 1 des deux côtés de (B.4.3)."""
+    rv = r_V(A, B, M, L)
+    # Extérieur : φ' → βM/4πr²
+    r = 1e4 * rv
+    ext = (r * Y_exact(r, A, B, M, L)) / (B * M / (4.0 * np.pi * r**2))
+    assert abs(ext - 1.0) < 1e-3, f"extérieur : {ext:.6f}"
+    # Intérieur : φ' → βM/4πr² (r/r_V)^{3/2}
+    r = 1e-6 * rv
+    ref = (B * M / (4.0 * np.pi * r**2)) * (r / rv)**1.5
+    inte = (r * Y_exact(r, A, B, M, L)) / ref
+    assert abs(inte - 1.0) < 1e-3, f"intérieur : {inte:.6f}"
+
+
+def t5_homogeneite():
+    """Invariance d'échelle : (β,M,Λ) → (kβ, M, k^{1/3}Λ) laisse r_V fixe."""
+    rv0 = r_V(A, B, M, L)
+    for k in [1e-6, 1e3, 1e9]:
+        rv = r_V(A, k * B, M, k**(1.0 / 3.0) * L)
+        assert abs(rv - rv0) / rv0 < TOL, f"k={k:.0e}"
+
+
+def t6_lambda_cosmologique():
+    """Λ recalculé, pas recopié. Garde-fou contre l'erreur de 11 ordres."""
+    lam = lambda_cosmo()
+    assert 1.5e-22 < lam < 2.0e-22, f"Λ = {lam:.3e} GeV hors plage"
+    faux = 5.13e-34
+    assert lam / faux > 1e10, "la valeur erronée n'est plus écartée"
+
+
+if __name__ == "__main__":
+    tests = [
+        ("solution vérifie (B.4.1)", t1_solution_verifie_equation),
+        ("limite α → 0", t2_limite_alpha_nul),
+        ("transition à r_V", t3_transition_a_rV),
+        ("asymptotiques (B.4.3)", t4_asymptotiques),
+        ("homogénéité dimensionnelle", t5_homogeneite),
+        ("Λ recalculé", t6_lambda_cosmologique),
+    ]
+    echecs = 0
+    for nom, f in tests:
+        try:
+            f()
+            print(f"  OK   {nom}")
+        except AssertionError as e:
+            print(f"  ÉCHEC {nom} : {e}")
+            echecs += 1
+    print(f"\n{len(tests) - echecs}/{len(tests)} tests passés")
+    print("Rappel : cohérence interne uniquement — β reste non sourcé.")
