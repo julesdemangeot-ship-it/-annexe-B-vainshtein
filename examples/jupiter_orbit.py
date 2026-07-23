@@ -56,26 +56,27 @@ energies      = []
 
 # ==========================================
 # BOUCLE DE SIMULATION (Méthode d'Euler-Cromer)
-# Diagnostic d'énergie évalué AVANT la mise à jour de position,
-# c'est-à-dire au même instant que la vitesse déjà actualisée.
+# Diagnostic d'énergie évalué APRÈS la mise à jour de position
+# et de vitesse, afin que les deux soient au même instant.
 # ==========================================
 for _ in range(steps):
-    r_distance  = np.linalg.norm(position)
+    r_distance   = np.linalg.norm(position)
     acceleration = -(G * M_SOLEIL / r_distance**3) * position
 
     # Mise à jour de la vitesse (Euler-Cromer : vitesse d'abord)
     vitesse  += acceleration * dt
-
-    # Diagnostic : énergie mécanique — vitesse et position évaluées au même instant
-    v_norm  = np.linalg.norm(vitesse)
-    e_meca  = 0.5 * v_norm**2 - (G * M_SOLEIL / r_distance)
-    energies.append(e_meca)
 
     # Mise à jour de la position avec la vitesse déjà actualisée
     position += vitesse * dt
 
     trajectoire_x.append(position[0])
     trajectoire_y.append(position[1])
+
+    # Diagnostic : énergie mécanique — vitesse et position au même instant
+    r_new  = np.linalg.norm(position)
+    v_norm = np.linalg.norm(vitesse)
+    e_meca = 0.5 * v_norm**2 - (G * M_SOLEIL / r_new)
+    energies.append(e_meca)
 
 energies = np.array(energies)
 

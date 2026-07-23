@@ -156,25 +156,21 @@ def t8_drapeau_validite():
     assert not valide_gros, "β=1e-11 doit être rejeté (ε >> 1)"
 
 
-def t9_beta_max_cassini():
-    """beta_max_cassini() sature exactement la borne Cassini.
+def t9_cassini_sans_contrainte():
+    """Dans le domaine valide (ε ≤ 1), Cassini n'impose aucune contrainte sur β.
 
-    - À β = beta_max_cassini(), la formule analytique donne |γ − 1| = BOUND_CASSINI
-      (la valeur est hors domaine perturbatif ε >> 1, mais l'inversion algébrique
-      reste cohérente — c'est précisément le propos de la Tâche 3).
-    - À β = 1/M_Pl (ε = 1), |γ − 1| << BOUND_CASSINI : le seuil ε < 1 contraint
-      β bien plus sévèrement que Cassini (≈ 4.5 ordres d'écart).
+    À la frontière du domaine perturbatif β = 1/M_Pl (ε = 1) :
+    - |γ − 1| ≤ BOUND_CASSINI par ≥ 6 ordres de grandeur ;
+    - la marge est d'au moins 10⁶, confirmant que ε ≤ 1 est le seul seuil actif.
     """
-    bm       = ppn.beta_max_cassini()
-    dg, _, _ = ppn.ecart_ppn(bm, ppn.AU_M)
-    assert abs(dg / ppn.BOUND_CASSINI - 1.0) < 1e-6, (
-        f"|γ−1|={dg:.4e}, Cassini={ppn.BOUND_CASSINI:.4e}"
-    )
-    # β = 1/M_Pl passe largement Cassini (et est dans le domaine perturbatif)
     dg_mpl, _, valide_mpl = ppn.ecart_ppn(1.0 / ppn.M_PL, ppn.AU_M)
-    assert valide_mpl, "β=1/M_Pl doit être dans le domaine perturbatif"
+    assert valide_mpl, "β=1/M_Pl doit être dans le domaine perturbatif (ε=1)"
     assert dg_mpl < ppn.BOUND_CASSINI, (
         f"β=1/M_Pl devrait passer Cassini (|γ−1|={dg_mpl:.3e})"
+    )
+    marge = ppn.BOUND_CASSINI / dg_mpl
+    assert marge > 1e6, (
+        f"La marge Cassini dans le domaine valide doit dépasser 10^6 : {marge:.2e}"
     )
 
 
@@ -188,7 +184,7 @@ if __name__ == "__main__":
         ("Λ recalculé",                   t6_lambda_cosmologique),
         ("loi |γ−1| ∝ β^{3/2}",          t7_loi_puissance_beta),
         ("drapeau validité ε ≤ 1",        t8_drapeau_validite),
-        ("beta_max_cassini sature borne", t9_beta_max_cassini),
+        ("Cassini sans contrainte (ε≤1)", t9_cassini_sans_contrainte),
     ]
     echecs = 0
     for nom, f in tests:

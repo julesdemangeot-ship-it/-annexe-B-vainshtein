@@ -136,17 +136,16 @@ if __name__ == "__main__":
     print(f"β (valeur test)     : {BETA:.2e} GeV^-1   (PROVISOIRE, non sourcé)")
     print("-" * 68)
 
-    # Seuils analytiques
+    # Seuil perturbatif (seule contrainte valide sur β)
     beta_pert = 1.0 / M_PL
-    beta_cas  = beta_max_cassini()
     rv_mpl    = r_vainshtein_m(beta_pert)
     dg_mpl, _, _ = ecart_ppn(beta_pert, AU_M)
 
-    print(f"Seuil Cassini       : β ≤ {beta_cas:.3e} GeV^-1")
     print(f"Seuil perturbatif   : β ≤ {beta_pert:.3e} GeV^-1  (ε ≤ 1)")
-    print(f"  (4.5 ordres de différence — c'est ε < 1 qui contraint β, pas Cassini)")
+    print(f"  Dans ce domaine : |γ − 1| ≤ {dg_mpl:.3e}  (à β = 1/M_Pl, r = 1 UA)")
+    print(f"  Marge Cassini   : {BOUND_CASSINI / dg_mpl:.1e}× — Cassini n'impose"
+          f" aucune contrainte sur β, seul ε ≤ 1 le fait.")
     print(f"r_V à β = 1/M_Pl   : {rv_mpl / PC_M:.1f} pc")
-    print(f"|γ − 1| à β=1/M_Pl, r=1 UA : {dg_mpl:.3e}")
     print("-" * 68)
 
     # Balayage en β
@@ -157,15 +156,14 @@ if __name__ == "__main__":
     print("-" * 80)
 
     betas = [
-        ("1/M_Pl",   1.0 / M_PL),
-        ("10^-18",   1e-18),
-        ("10^-17",   1e-17),
-        ("10^-16",   1e-16),
-        ("10^-15",   1e-15),
-        (f"β_Cassini={beta_cas:.2e}", beta_cas),
-        ("10^-14",   1e-14),
-        ("10^-13",   1e-13),
-        ("10^-12",   1e-12),
+        ("1/M_Pl",        1.0 / M_PL),
+        ("10^-18",        1e-18),
+        ("10^-17",        1e-17),
+        ("10^-16",        1e-16),
+        ("10^-15",        1e-15),
+        ("10^-14",        1e-14),
+        ("10^-13",        1e-13),
+        ("10^-12",        1e-12),
         ("10^-11 (test)", BETA),
     ]
 

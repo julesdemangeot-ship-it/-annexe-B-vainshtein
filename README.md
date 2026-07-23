@@ -37,19 +37,19 @@ champ. L'action des fichiers `.tex` fait apparaître Λ dans
 indice mais non une preuve : une constante absorbée reste possible et
 devrait alors être documentée explicitement.
 
-### Deux seuils sur β
+### Domaine de validité et contrainte sur β
 
-Le garde-fou `ε ≤ 1` (domaine de validité du développement perturbatif)
-contraint β bien plus sévèrement que Cassini :
+La formule `|γ − 1| = ε·(r/r_V)^{3/2}` n'est valide que pour `ε ≡ (β·M_Pl)² ≤ 1`.
+Ce garde-fou est la seule contrainte active sur β :
 
-| Seuil | Valeur | Condition |
+| Condition | Valeur de β | Conséquence |
 |---|---|---|
-| Perturbatif | β ≤ 4.107×10⁻¹⁹ GeV⁻¹ | ε = (β·M_Pl)² ≤ 1 |
-| Cassini | β ≤ 1.042×10⁻¹⁴ GeV⁻¹ | \|γ − 1\| ≤ 2.3×10⁻⁵ |
+| Seuil perturbatif (ε ≤ 1) | β ≤ 4.107×10⁻¹⁹ GeV⁻¹ | **seule contrainte valide** |
+| Borne Cassini (\|γ−1\| ≤ 2.3×10⁻⁵) | β ≤ 1.042×10⁻¹⁴ GeV⁻¹ | hors domaine (ε ≈ 6×10⁸) — non exploitable |
 
-Les deux seuils sont séparés de **4.5 ordres de grandeur**. C'est ε < 1
-qui contraint β, pas Cassini. À β = 1/M_Pl (seuil perturbatif), on obtient
-r_V ≈ 152 pc et |γ − 1| ≈ 5.7×10⁻¹² à 1 UA (compatible Cassini).
+Dans le domaine valide (β ≤ 1/M_Pl), on obtient à la frontière :
+r_V ≈ 152 pc et |γ − 1| ≈ 5.7×10⁻¹² à 1 UA — **6 ordres en dessous de Cassini**.
+Cassini n'impose aucune contrainte sur β ; seul ε ≤ 1 le fait.
 
 Le résultat `|γ − 1| = 0.68` pour β = 10⁻¹¹ GeV⁻¹ (anciennement affiché)
 et la conclusion « exclu par Cassini » qui s'ensuivait décrivaient le
