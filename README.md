@@ -15,7 +15,7 @@ grandeur.
 |---|---|---|---|
 | `α = 2κ` | 2.0 | à confirmer | B.2.x (non tracé) |
 | `Λ` | 1.76×10⁻²² GeV | dérivation vérifiée | Λ³ = M_Pl H₀², recalculé dans le script |
-| `β` | 1×10⁻¹¹ GeV⁻¹ | **PROVISOIRE** | non sourcé — cf. Issues |
+| `β` | balayé (voir plus bas) | NON SOURCÉ | B.1.x — ψ₀ manquant |
 | `M_*` | M_Pl = 2.435×10¹⁸ GeV | approximation | suppose ξψ₀² ≪ M_Pl² |
 
 ### Statut des valeurs de Λ
@@ -59,7 +59,7 @@ modèle. Voir `CHANGELOG.md` pour le détail de l'erreur et sa reconstruction.
 L'erreur sur Λ (5.13×10⁻³⁴ GeV au lieu de 1.76×10⁻²² GeV) est conservée
 en mémoire dans le script via le test `t6` et dans ce tableau :
 
-| | Λ = 5.13×10⁻³⁴ GeV | Λ = 1.76×10⁻²² GeV |
+| Grandeur | Λ = 5.13×10⁻³⁴ GeV | Λ = 1.76×10⁻²² GeV |
 |---|---|---|
 | r_V (Soleil, β = 10⁻¹¹) | 4.7×10³² m | 1.4×10²¹ m (44 kpc) |
 | Correction nécessaire | valeur erronée | dérivation vérifiée |
@@ -100,8 +100,7 @@ python3 examples/jupiter_orbit.py --save fig.png   # simulation orbitale
 
 ## Prochaines étapes
 
-- [ ] **Sourcer `β` depuis B.1.x** (`β ≡ 2ξψ₀/M_*²` — la valeur de ψ₀ manque).
-      Priorité absolue : ce paramètre décide seul si le modèle passe ou non Cassini.
+- [ ] **Sourcer `β` depuis B.1.x** (`β ≡ 2ξψ₀/M_*²` — la valeur de ψ₀ manque). Question à trancher : le modèle prédit-il β ~ 1/M_Pl ? Si oui, l'annexe B passe Cassini avec 6 ordres de marge et la conclusion est à réécrire.
 - [ ] Établir si le Λ de la table du manuscrit est le même paramètre que celui de (B.3.6)
 - [ ] Confirmer `α = 2κ` depuis la construction galiléonne (B.2.x)
 - [ ] Fixer le cadre (Jordan ou Einstein) des équations linéarisées (B.5.1)
