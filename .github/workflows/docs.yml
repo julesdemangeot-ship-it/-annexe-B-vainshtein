@@ -1,0 +1,67 @@
+name: Deploy docs to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install numpy
+      - name: Run tests
+        run: python3 tests/test_ppn.py
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install numpy
+      - name: Run numerical report
+        run: python3 scripts/ppn_check.py > /tmp/rapport.txt
+      - name: Build site
+        run: |
+          mkdir -p _site
+          cp README.md _site/index.md
+          cp CHANGELOG.md _site/
+          printf '<pre>' >> _site/rapport.txt
+          cat /tmp/rapport.txt >> _site/rapport.txt
+          printf '</pre>' >> _site/rapport.txt
+          cat > _site/_config.yml <<'EOF'
+          theme: jekyll-theme-minimal
+          title: Annexe B — Mécanisme de Vainshtein
+          EOF
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
