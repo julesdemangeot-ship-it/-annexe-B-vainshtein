@@ -44,9 +44,9 @@ jobs:
           mkdir -p _site
           cp README.md _site/index.md
           cp CHANGELOG.md _site/
-          printf '<pre>' >> _site/rapport.txt
-          cat /tmp/rapport.txt >> _site/rapport.txt
-          printf '</pre>' >> _site/rapport.txt
+          printf '# Rapport numérique\n\n```\n' > _site/rapport.md
+          cat /tmp/rapport.txt >> _site/rapport.md
+          printf '\n```\n' >> _site/rapport.md
           cat > _site/_config.yml <<'EOF'
           theme: jekyll-theme-minimal
           title: Annexe B — Mécanisme de Vainshtein
