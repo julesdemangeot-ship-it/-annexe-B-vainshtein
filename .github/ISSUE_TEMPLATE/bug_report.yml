@@ -1,0 +1,59 @@
+name: Bug report
+description: Signaler un bug reproductible dans ce dépôt
+title: "[Bug]: "
+labels: ["triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de remplir ce formulaire. Les rapports incomplets ne peuvent pas être investigués.
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Commit SHA, tag, ou version utilisée
+      placeholder: ex. v0.1.0 ou 1a2b3c4
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Étapes de reproduction
+      description: Étapes minimales pour reproduire le problème
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportement attendu
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportement observé
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environnement
+      description: OS, version de Python, commande exécutée, etc.
+    validations:
+      required: true
+
+  - type: input
+    id: external-issue
+    attributes:
+      label: Issue externe liée (optionnel)
+      description: Si vous référencez un autre dépôt, donnez owner/repo#numéro
+      placeholder: ex. github/copilot-cli#4254
