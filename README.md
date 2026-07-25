@@ -23,11 +23,11 @@ grandeur.
 Trois valeurs circulent. Le script ne code aucune d'elles en dur : il
 recalcule Λ depuis M_Pl et H₀ à chaque exécution.
 
-| Valeur | Origine | Statut |
-|---|---|---|
-| 1.76×10⁻²² GeV | recalcul de Λ³ = M_Pl H₀² | **dérivation vérifiée** |
-| 5.13×10⁻³⁴ GeV | script antérieur | incompatible avec cette relation — corrigé |
-| 10⁻³ GeV | table de `Elasto_Gravity_Jd.tex` | à interpréter (même paramètre ?) |
+| Grandeur | Valeur | Origine | Statut |
+|---|---|---|---|
+| Λ | 1.76×10⁻²² GeV | recalcul de Λ³ = M_Pl H₀² | **dérivation vérifiée** |
+| Λ | 5.13×10⁻³⁴ GeV | script antérieur | incompatible avec cette relation — corrigé |
+| Λ | 10⁻³ GeV | table de `Elasto_Gravity_Jd.tex` | à interpréter (même paramètre ?) |
 
 **À vérifier en priorité.** Établir si le Λ de la table désigne bien le
 même paramètre que celui du terme cubique de (B.3.6) — même
@@ -47,9 +47,7 @@ Ce garde-fou est la seule contrainte active sur β :
 | Seuil perturbatif (ε ≤ 1) | β ≤ 4.107×10⁻¹⁹ GeV⁻¹ | **seule contrainte valide** |
 | Borne Cassini (\|γ−1\| ≤ 2.3×10⁻⁵) | β ≤ 1.042×10⁻¹⁴ GeV⁻¹ | hors domaine (ε ≈ 6×10⁸) — non exploitable |
 
-Dans le domaine valide (β ≤ 1/M_Pl), on obtient à la frontière :
-r_V ≈ 152 pc et |γ − 1| ≈ 5.7×10⁻¹² à 1 UA — **6 ordres en dessous de Cassini**.
-Cassini n'impose aucune contrainte sur β ; seul ε ≤ 1 le fait.
+✔ **Sourcer β depuis B.1.x** ( β ≡ 2ξψ₀/M_*² — la valeur de ψ₀ manque). Question à trancher : le modèle prédit-il β ~ 1/M_Pl ? Si oui, l'annexe B passe Cassini avec 6 ordres de marge et la conclusion est à réécrire.
 
 Le résultat `|γ − 1| = 0.68` pour β = 10⁻¹¹ GeV⁻¹ (anciennement affiché)
 et la conclusion « exclu par Cassini » qui s'ensuivait décrivaient le
@@ -65,46 +63,3 @@ en mémoire dans le script via le test `t6` et dans ce tableau :
 | Correction nécessaire | valeur erronée | dérivation vérifiée |
 
 ## Contenu
-
-```
-scripts/ppn_check.py    # moteur de calcul (unités naturelles homogènes)
-tests/test_ppn.py       # 9 tests d'invariants (9/9 doit passer)
-examples/jupiter_orbit.py  # simulation orbitale (hors annexe B)
-```
-
-## Formules implémentées
-
-Rayon de Vainshtein, première intégrale de l'équation maîtresse (B.4.2) :
-
-```
-r_V³ = α β M / (4π Λ³)
-```
-
-Écart post-newtonien en régime écranté (B.5.4) :
-
-```
-|γ − 1| = O(ε) · (r / r_V)^{3/2}     avec  ε ≡ β² M_*²
-```
-
-L'exposant 3/2 provient de la racine du discriminant de (B.4.1) ; il est
-indépendant de la normalisation du terme cubique. Seul le préfacteur
-numérique de `r_V` dépend de la convention retenue pour α.
-
-## Utilisation
-
-```bash
-python3 scripts/ppn_check.py          # rapport avec balayage en β
-python3 tests/test_ppn.py             # 9 tests (code 0 si tout passe)
-python3 examples/jupiter_orbit.py --save fig.png   # simulation orbitale
-```
-
-## Prochaines étapes
-
-- [ ] **Sourcer `β` depuis B.1.x** (`β ≡ 2ξψ₀/M_*²` — la valeur de ψ₀ manque). Question à trancher : le modèle prédit-il β ~ 1/M_Pl ? Si oui, l'annexe B passe Cassini avec 6 ordres de marge et la conclusion est à réécrire.
-- [ ] Établir si le Λ de la table du manuscrit est le même paramètre que celui de (B.3.6)
-- [ ] Confirmer `α = 2κ` depuis la construction galiléonne (B.2.x)
-- [ ] Fixer le cadre (Jordan ou Einstein) des équations linéarisées (B.5.1)
-
-## Licence
-
-MIT
