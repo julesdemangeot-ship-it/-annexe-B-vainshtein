@@ -21,12 +21,16 @@ grandeur.
 ### Statut des valeurs de Λ
 
 Trois valeurs circulent. Le script ne code aucune d'elles en dur : il
-recalcule Λ depuis M_Pl et H₀ à chaque exécution.
+recalcule Λ depuis M_Pl et H₀ à chaque exécution via la relation
+
+$$
+\Lambda^3 = M_{\rm Pl}\, H_0^2 \tag{1}
+$$
 
 | Grandeur | Valeur | Origine | Statut |
 |---|---|---|---|
-| Λ | 1.76×10⁻²² GeV | recalcul de Λ³ = M_Pl H₀² | **dérivation vérifiée** |
-| Λ | 5.13×10⁻³⁴ GeV | script antérieur | incompatible avec cette relation — corrigé |
+| Λ | 1.76×10⁻²² GeV | recalcul de (1) | **dérivation vérifiée** |
+| Λ | 5.13×10⁻³⁴ GeV | script antérieur | incompatible avec (1) — corrigé |
 | Λ | 10⁻³ GeV | table de `Elasto_Gravity_Jd.tex` | à interpréter (même paramètre ?) |
 
 **À vérifier en priorité.** Établir si le Λ de la table désigne bien le
@@ -39,7 +43,25 @@ devrait alors être documentée explicitement.
 
 ### Domaine de validité et contrainte sur β
 
-La formule `|γ − 1| = ε·(r/r_V)^{3/2}` n'est valide que pour `ε ≡ (β·M_Pl)² ≤ 1`.
+La définition du couplage β est :
+
+$$
+\beta \equiv \frac{2\xi\psi_0}{M_*^2} \tag{2}
+$$
+
+Le paramètre de perturbativité est :
+
+$$
+\varepsilon \equiv (\beta\, M_{\rm Pl})^2 \tag{3}
+$$
+
+La formule de déviation post-newtonienne
+
+$$
+|\gamma - 1| = \varepsilon \cdot \left(\frac{r}{r_V}\right)^{3/2} \tag{4}
+$$
+
+n'est valide que pour `ε ≡ (β·M_Pl)² ≤ 1`.
 Ce garde-fou est la seule contrainte active sur β :
 
 | Condition | Valeur de β | Conséquence |
@@ -47,7 +69,7 @@ Ce garde-fou est la seule contrainte active sur β :
 | Seuil perturbatif (ε ≤ 1) | β ≤ 4.107×10⁻¹⁹ GeV⁻¹ | **seule contrainte valide** |
 | Borne Cassini (\|γ−1\| ≤ 2.3×10⁻⁵) | β ≤ 1.042×10⁻¹⁴ GeV⁻¹ | hors domaine (ε ≈ 6×10⁸) — non exploitable |
 
-✔ **Sourcer β depuis B.1.x** ( β ≡ 2ξψ₀/M_*² — la valeur de ψ₀ manque). Question à trancher : le modèle prédit-il β ~ 1/M_Pl ? Si oui, l'annexe B passe Cassini avec 6 ordres de marge et la conclusion est à réécrire.
+✔ **Sourcer β depuis B.1.x** ( β ≡ 2ξψ₀/M_*² (éq. 2) — la valeur de ψ₀ manque). Question à trancher : le modèle prédit-il β ~ 1/M_Pl ? Si oui, l'annexe B passe Cassini avec 6 ordres de marge et la conclusion est à réécrire.
 
 Le résultat `|γ − 1| = 0.68` pour β = 10⁻¹¹ GeV⁻¹ (anciennement affiché)
 et la conclusion « exclu par Cassini » qui s'ensuivait décrivaient le
